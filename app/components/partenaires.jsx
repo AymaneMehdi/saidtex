@@ -1,6 +1,7 @@
+"use client"
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { revalidateTag } from 'next/cache'; // Import revalidateTag from next/cache
+import { revalidate } from 'next';
 
 const MyPage = ({ data }) => {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -9,8 +10,8 @@ const MyPage = ({ data }) => {
   useEffect(() => {
     fetchPartners();
     const interval = setInterval(() => {
-      revalidateTag('my-data');
-    }, 60);
+      revalidate('my-data');
+    }, 60000); // Revalidate every 60 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -22,7 +23,7 @@ const MyPage = ({ data }) => {
 
   const fetchPartners = async () => {
     try {
-      const response = await fetch("https://www.saidtex.ma/api/partners", {cache:'no-store'});
+      const response = await fetch("https://www.saidtex.ma/api/partners");
       if (!response.ok) {
         throw new Error("Failed to fetch partners");
       }
@@ -30,6 +31,7 @@ const MyPage = ({ data }) => {
       setGalleryItems(partners);
     } catch (error) {
       console.error("Error fetching partners:", error);
+      // Handle the error here, e.g., show an error message to the user
     }
   };
 
@@ -118,29 +120,24 @@ const MyPage = ({ data }) => {
 
 export async function getStaticProps() {
   try {
-    // Fetch data from an API or any other data source
     const response = await fetch("https://www.saidtex.ma/api/partners");
     if (!response.ok) {
       throw new Error("Failed to fetch data");
     }
     const data = await response.json();
 
-    // Return the fetched data as props
     return {
       props: {
         data,
       },
-      // Revalidate the data every 1 hour (3600 seconds)
-      revalidate: 60,
+      revalidate: 3600, // Revalidate every 1 hour
     };
   } catch (error) {
     console.error("Error fetching data:", error);
-    // If an error occurs during data fetching, return an empty props object
     return {
       props: {},
     };
   }
 }
-
 
 export default MyPage;
