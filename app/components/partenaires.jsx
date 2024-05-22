@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { fetchPartnersFromCMS } from "../utils/cms"; // Import the function to fetch data
+import { fetchPartnersFromCMS } from "./cms"; // Import the function to fetch data
 
 const Hero1 = ({ galleryItems }) => {
   const [activeFilter, setActiveFilter] = useState("All");
