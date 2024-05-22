@@ -17,7 +17,7 @@ const Hero1 = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await fetch("https://back-end-htyn.onrender.com/partners");
+      const response = await fetch("https://www.saitex.ma/api/partners");
       if (!response.ok) {
         throw new Error("Failed to fetch blogs");
       }
