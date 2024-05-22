@@ -1,27 +1,23 @@
 "use client";
 import React, { Component } from "react";
-import { useEffect } from 'react';
 import image2 from '../../public/images/image.PNG'
 class Example extends Component {
-   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://static.elfsight.com/platform/platform.js';
-    script.setAttribute('data-use-service-core', '');
-    script.defer = true;
-
-    // Append the script to the document body
+  componentDidMount() {
+    const script = document.createElement("script");
+    script.src =
+      "https://whats.stacklix.com/pixel/c60782694aa54311b2eeb359dbd6e011";
+    script.async = true;
     document.body.appendChild(script);
+  }
 
-    // Ensure cleanup by removing the script when component unmounts
-    return () => {
+  componentWillUnmount() {
+    // Optionally, remove the script when the component unmounts
+    const script = document.querySelector(
+      'script[src="https://whats.stacklix.com/pixel/c60782694aa54311b2eeb359dbd6e011"]'
+    );
+    if (script) {
       document.body.removeChild(script);
-    };
-  }, []); // Empty dependency array ensures the effect runs only once on mount
-
-  return (
-    <div className="elfsight-app-9a67c1a1-47b5-4764-a977-9157c8bfb5c0" data-elfsight-app-lazy></div>
-  );
-}
+    }
   }
 
   render() {
