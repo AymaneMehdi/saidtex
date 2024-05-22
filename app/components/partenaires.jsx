@@ -1,8 +1,9 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 const Hero1 = ({ galleryItems }) => {
-  const [activeFilter, setActiveFilter] = React.useState("All");
+  const [activeFilter, setActiveFilter] = useState("All");
 
   const handleFilterClick = (filter) => {
     console.log("Selected category:", filter);
