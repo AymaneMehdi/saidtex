@@ -1,13 +1,36 @@
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { fetchPartnersFromCMS } from "./cms"; // Import the function to fetch data
+import { revalidateTag } from 'next/cache'; // Import revalidateTag from next/cache
 
-const Hero1 = ({ galleryItems }) => {
+const MyPage = ({ data }) => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [galleryItems, setGalleryItems] = useState([]);
+
+  useEffect(() => {
+    fetchPartners();
+    const interval = setInterval(() => {
+      revalidateTag('my-data');
+    }, 60);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleFilterClick = (filter) => {
     console.log("Selected category:", filter);
     setActiveFilter(filter);
+  };
+
+  const fetchPartners = async () => {
+    try {
+      const response = await fetch("https://www.saidtex.ma/api/partners", {cache:'no-store'});
+      if (!response.ok) {
+        throw new Error("Failed to fetch partners");
+      }
+      const partners = await response.json();
+      setGalleryItems(partners);
+    } catch (error) {
+      console.error("Error fetching partners:", error);
+    }
   };
 
   return (
@@ -37,7 +60,24 @@ const Hero1 = ({ galleryItems }) => {
               >
                 All
               </span>
-              {/* Other filter spans */}
+              <span
+                onClick={() => handleFilterClick("Tissage et bonneterie")}
+                className={activeFilter === "Tissage et bonneterie" ? "active" : ""}
+              >
+                Tissage et bonneterie
+              </span>
+              <span
+                onClick={() => handleFilterClick("Finissage")}
+                className={activeFilter === "Finissage" ? "active" : ""}
+              >
+                Finissage
+              </span>
+              <span
+                onClick={() => handleFilterClick("Filature")}
+                className={activeFilter === "Filature" ? "active" : ""}
+              >
+                Filature
+              </span>
             </div>
           </div>
 
@@ -77,14 +117,30 @@ const Hero1 = ({ galleryItems }) => {
 };
 
 export async function getStaticProps() {
-  // Fetch data from CMS
-  const galleryItems = await fetchPartnersFromCMS();
+  try {
+    // Fetch data from an API or any other data source
+    const response = await fetch("https://www.saidtex.ma/api/partners");
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const data = await response.json();
 
-  return {
-    props: {
-      galleryItems,
-    },
-  };
+    // Return the fetched data as props
+    return {
+      props: {
+        data,
+      },
+      // Revalidate the data every 1 hour (3600 seconds)
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // If an error occurs during data fetching, return an empty props object
+    return {
+      props: {},
+    };
+  }
 }
 
-export default Hero1;
+
+export default MyPage;
