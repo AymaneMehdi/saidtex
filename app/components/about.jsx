@@ -1,24 +1,7 @@
 "use client";
 import React, { Component } from "react";
 import image2 from '../../public/images/image.PNG'
-class Example extends Component {
-  componentDidMount() {
-    const script = document.createElement("script");
-    script.src =
-      "https://whats.stacklix.com/pixel/c60782694aa54311b2eeb359dbd6e011";
-    script.async = true;
-    document.body.appendChild(script);
-  }
 
-  componentWillUnmount() {
-    // Optionally, remove the script when the component unmounts
-    const script = document.querySelector(
-      'script[src="https://whats.stacklix.com/pixel/c60782694aa54311b2eeb359dbd6e011"]'
-    );
-    if (script) {
-      document.body.removeChild(script);
-    }
-  }
 
   render() {
     return (
