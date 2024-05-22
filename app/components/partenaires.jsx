@@ -1,17 +1,39 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
 
-const Hero1 = ({ galleryItems }) => {
+const Hero1 = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [galleryItems, setGalleryItems] = useState([]);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
 
   const handleFilterClick = (filter) => {
     console.log("Selected category:", filter);
     setActiveFilter(filter);
   };
 
+  const fetchBlogs = async () => {
+    try {
+      const response = await fetch("https://www.saidtex.ma/api/partners", {cache:'no-store'});
+      if (!response.ok) {
+        throw new Error("Failed to fetch blogs");
+      }
+      const blogs = await response.json();
+      setGalleryItems(blogs);
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    }
+  };
+
   return (
-    <section className="works section-padding" data-scroll-index="2" id="partenaires">
+    <section
+      className="works section-padding"
+      data-scroll-index="2"
+      id="partenaires"
+    >
       <div className="">
         <div className="row">
           <div className="section-head offset-md-2 col-md-8 offset-lg-3 col-lg-6">
@@ -33,7 +55,24 @@ const Hero1 = ({ galleryItems }) => {
               >
                 All
               </span>
-              {/* Add other filter spans here */}
+              <span
+                onClick={() => handleFilterClick("Tissage et bonneterie")}
+                className={activeFilter === "Tissage et bonneterie" ? "active" : ""}
+              >
+                Tissage et bonneterie
+              </span>
+              <span
+                onClick={() => handleFilterClick("Finissage")}
+                className={activeFilter === "Finissage" ? "active" : ""}
+              >
+                Finissage
+              </span>
+              <span
+                onClick={() => handleFilterClick("Filature")}
+                className={activeFilter === "Filature" ? "active" : ""}
+              >
+                Filature
+              </span>
             </div>
           </div>
 
@@ -71,15 +110,5 @@ const Hero1 = ({ galleryItems }) => {
     </section>
   );
 };
-
-export async function getServerSideProps(context) {
-  // Fetch data from your API or database
-  const res = await fetch("https://www.saidtex.ma/api/partners",{next:{ revalidate:5}});
-  const galleryItems = await res.json();
-
-  return {
-    props: { galleryItems }, // Pass data to the component props
-  };
-}
 
 export default Hero1;
