@@ -1,4 +1,4 @@
-"use client"
+"use server"
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { revalidate } from 'next';
