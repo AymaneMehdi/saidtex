@@ -4,23 +4,17 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   await connectMongoDB();
-  try {
-    const partners = await Partner.find();
-  
-    // Create the response
-    const response = NextResponse.json(partners);
+  const partners = await Partner.find();
+  return NextResponse.json(partners);
+}
 
-    // Add CORS headers
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS");
-    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
-    // Ensure no caching
-    response.headers.set("Cache-Control", "no-store");
-
-    return response;
-  } catch (error) {
-    console.error("Error fetching partners:", error);
-    return NextResponse.error(new Error("Failed to fetch partners"), { status: 500 });
-  }
+export async function getServerSideProps() {
+  await connectMongoDB();
+  const partners = await Partner.find();
+  return {
+    props: {
+      partners: JSON.parse(JSON.stringify(partners)),
+    },
+    revalidate: 10, // Refresh every 10 seconds
+  };
 }
