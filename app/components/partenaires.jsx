@@ -1,19 +1,13 @@
-"use server"
+"use client"
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { revalidate } from 'next';
 
-const MyPage = ({ data }) => {
+const Hero1 = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [galleryItems, setGalleryItems] = useState([]);
 
   useEffect(() => {
-    fetchPartners();
-    const interval = setInterval(() => {
-      revalidate('my-data');
-    }, 60000); // Revalidate every 60 seconds
-
-    return () => clearInterval(interval);
+    fetchBlogs();
   }, []);
 
   const handleFilterClick = (filter) => {
@@ -21,17 +15,16 @@ const MyPage = ({ data }) => {
     setActiveFilter(filter);
   };
 
-  const fetchPartners = async () => {
+  const fetchBlogs = async () => {
     try {
-      const response = await fetch("https://www.saidtex.ma/api/partners");
+      const response = await fetch("https://www.saidtex.ma/api/partners", {cache:'no-store'});
       if (!response.ok) {
-        throw new Error("Failed to fetch partners");
+        throw new Error("Failed to fetch blogs");
       }
-      const partners = await response.json();
-      setGalleryItems(partners);
+      const blogs = await response.json();
+      setGalleryItems(blogs);
     } catch (error) {
-      console.error("Error fetching partners:", error);
-      // Handle the error here, e.g., show an error message to the user
+      console.error("Error fetching blogs:", error);
     }
   };
 
@@ -118,26 +111,4 @@ const MyPage = ({ data }) => {
   );
 };
 
-export async function getStaticProps() {
-  try {
-    const response = await fetch("https://www.saidtex.ma/api/partners");
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const data = await response.json();
-
-    return {
-      props: {
-        data,
-      },
-      revalidate: 3600, // Revalidate every 1 hour
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {},
-    };
-  }
-}
-
-export default MyPage;
+export default Hero1;
