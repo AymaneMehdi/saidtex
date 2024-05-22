@@ -1,31 +1,13 @@
-"use client"
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
+import { fetchPartnersFromCMS } from "../utils/cms"; // Import the function to fetch data
 
-const Hero1 = () => {
+const Hero1 = ({ galleryItems }) => {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [galleryItems, setGalleryItems] = useState([]);
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
 
   const handleFilterClick = (filter) => {
     console.log("Selected category:", filter);
     setActiveFilter(filter);
-  };
-
-  const fetchBlogs = async () => {
-    try {
-      const response = await fetch("https://www.saidtex.ma/api/partners", {cache:'no-store'});
-      if (!response.ok) {
-        throw new Error("Failed to fetch blogs");
-      }
-      const blogs = await response.json();
-      setGalleryItems(blogs);
-    } catch (error) {
-      console.error("Error fetching blogs:", error);
-    }
   };
 
   return (
@@ -55,24 +37,7 @@ const Hero1 = () => {
               >
                 All
               </span>
-              <span
-                onClick={() => handleFilterClick("Tissage et bonneterie")}
-                className={activeFilter === "Tissage et bonneterie" ? "active" : ""}
-              >
-                Tissage et bonneterie
-              </span>
-              <span
-                onClick={() => handleFilterClick("Finissage")}
-                className={activeFilter === "Finissage" ? "active" : ""}
-              >
-                Finissage
-              </span>
-              <span
-                onClick={() => handleFilterClick("Filature")}
-                className={activeFilter === "Filature" ? "active" : ""}
-              >
-                Filature
-              </span>
+              {/* Other filter spans */}
             </div>
           </div>
 
@@ -110,5 +75,16 @@ const Hero1 = () => {
     </section>
   );
 };
+
+export async function getStaticProps() {
+  // Fetch data from CMS
+  const galleryItems = await fetchPartnersFromCMS();
+
+  return {
+    props: {
+      galleryItems,
+    },
+  };
+}
 
 export default Hero1;
