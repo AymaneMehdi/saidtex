@@ -1,28 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  async headers() {
+module.exports = {
+  async rewrites() {
     return [
       {
-        source: "/api/:path*", 
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache, no-store, must-revalidate",
-          },
-        ],
-      },
-      {
-        source: "/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=3600", 
-          },
-        ],
+        source: '/api/partners',
+        destination: 'https://saidtex.ma/api/partners',
       },
     ];
   },
 };
-
-export default nextConfig;
-
