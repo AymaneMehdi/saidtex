@@ -9,9 +9,10 @@ export async function GET() {
   return new Response(JSON.stringify(partners), {
     status: 200,
     headers: {
-      'Cache-Control': 'public, s-maxage=1',
-      'CDN-Cache-Control': 'public, s-maxage=60',
-      'Vercel-CDN-Cache-Control': 'public, s-maxage=60',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Vercel-CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
     },
   });
 }
